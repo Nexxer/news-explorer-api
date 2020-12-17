@@ -11,22 +11,22 @@ const genErrHandler = require('./middlewares/genErrHandling');
 const limit = require('./middlewares/rateLimiter');
 const { portExpress, mongoUrl } = require('./configs/config');
 
-const { PORT = portExpress, MONGO_URL = mongoUrl } = process.env;
+const { PORT = portExpress } = process.env;
 const app = express();
 
-mongoose.connect(MONGO_URL, {
+mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
 
+app.use(requestLogger);
+app.use(limit);
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use(requestLogger);
-app.use(limit);
 app.use('/', routes);
 app.use(errorLogger);
 app.use(errors());

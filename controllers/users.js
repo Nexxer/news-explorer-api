@@ -1,4 +1,3 @@
-require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -11,14 +10,13 @@ const {
   errorValidationUser,
   errorConflictEmail,
   errorAuthorized,
+  notEnterPassword,
 } = require('../constants/errorMessage');
 const {
   jwtSecret,
   saltValue,
   timeJWT,
 } = require('../configs/config');
-
-const { JWT_SECRET = jwtSecret } = process.env;
 
 // возвращает информацию о пользователе (email и имя)
 const getUser = (req, res, next) => {
@@ -38,7 +36,11 @@ const getUser = (req, res, next) => {
 // Cоздаёт пользователя с переданными в теле email, password и name
 const createUser = (req, res, next) => {
   const { email, password, name } = req.body;
-  bcrypt.hash(password, saltValue)
+  if (!password) {
+    const error = new BadRequest(notEnterPassword);
+    return next(error);
+  }
+  return bcrypt.hash(password, saltValue)
     .then((hash) => User.create({ email, password: hash, name }))
     .then((user) => {
       res.status(201).send({
@@ -70,7 +72,7 @@ const loginUser = (req, res, next) => {
         throw new UnAuthorized(errorAuthorized);
       }
       const { id } = user;
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: timeJWT });
+      const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: timeJWT });
       res.send({ token, id });
     })
     .catch((err) => {
