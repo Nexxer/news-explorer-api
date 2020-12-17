@@ -11,7 +11,7 @@ const {
 
 // Возвращаем все статьи пользователя
 const getArticles = (req, res, next) => {
-  Article.find({ owner: req.body._id })
+  Article.find({ owner: req.user._id })
     .then((articles) => {
       if (!articles) {
         throw new NotFound(notFindUserArticle);
@@ -24,6 +24,11 @@ const getArticles = (req, res, next) => {
 // Создаёт статью с переданными в теле данными
 const addArticle = (req, res, next) => {
   Article.create({ owner: req.user._id, ...req.body })
+    .then((article) => {
+      const sendArticle = article.toObject();
+      delete sendArticle.owner;
+      res.send(sendArticle);
+    })
     .then((article) => res.send(article))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -37,7 +42,7 @@ const addArticle = (req, res, next) => {
 
 // Удаляет статью из сохранненых с проверкой принадлежности
 const deleteArticle = (req, res, next) => {
-  Article.findById(req.body._id).select('+owner')
+  Article.findById(req.params.articleId).select('+owner')
     .then((article) => {
       if (!article) {
         throw new NotFound(notFoundArticle);
