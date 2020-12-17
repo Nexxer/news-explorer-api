@@ -10,7 +10,7 @@ articlesRouter.use(auth);
 articlesRouter.get('/articles', getArticles);
 
 // Создаёт статью с переданными в теле данными
-articlesRouter.post('/articles', addArticle, celebrate({
+articlesRouter.post('/articles', celebrate({
   body: Joi.object().keys({
     keyword: Joi
       .string()
@@ -36,9 +36,9 @@ articlesRouter.post('/articles', addArticle, celebrate({
       .pattern(/(https ?:\/\/|ftps?:\/\/|www\.)((?![.,?!;:()]*(\s|$))[^\s]){2,}/)
       .required(),
   }),
-}));
+}), addArticle);
 
 // удаляет сохранённую статью  по _id
-articlesRouter.delete('/articles/articleId', deleteArticle);
+articlesRouter.delete('/articles/:articleId', deleteArticle);
 
 module.exports = articlesRouter;
