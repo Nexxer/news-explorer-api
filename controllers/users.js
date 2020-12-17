@@ -22,7 +22,7 @@ const { JWT_SECRET = jwtSecret } = process.env;
 
 // возвращает информацию о пользователе (email и имя)
 const getUser = (req, res, next) => {
-  User.findById(req.body._id)
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFound(notFoundUser);
