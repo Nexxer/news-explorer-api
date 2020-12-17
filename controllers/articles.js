@@ -1,19 +1,20 @@
 const Article = require('../models/article');
 const NotFound = require('../middlewares/errors/notFound');
 const BadRequest = require('../middlewares/errors/badRequest');
-const UnAuthorized = require('../middlewares/errors/unAuthorized');
+const Forbidden = require('../middlewares/errors/forbidden');
 const {
   notFindUserArticle,
   errorValidationAddArticle,
   notFoundArticle,
   errorDeleteArticleUnauth,
+  articleDeleteSucces,
 } = require('../constants/errorMessage');
 
 // Возвращаем все статьи пользователя
 const getArticles = (req, res, next) => {
   Article.find({ owner: req.user._id })
     .then((articles) => {
-      if (!articles) {
+      if (!articles || articles.length === 0) {
         throw new NotFound(notFindUserArticle);
       }
       res.send(articles);
@@ -48,10 +49,10 @@ const deleteArticle = (req, res, next) => {
         throw new NotFound(notFoundArticle);
       }
       if (req.user._id !== article.owner) {
-        throw new UnAuthorized(errorDeleteArticleUnauth);
+        throw new Forbidden(errorDeleteArticleUnauth);
       }
       article.remove();
-      res.send({ message: 'Новость удалена' });
+      res.send({ message: articleDeleteSucces });
     })
     .catch(next);
 };
