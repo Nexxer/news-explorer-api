@@ -10,7 +10,6 @@ const {
   errorValidationUser,
   errorConflictEmail,
   errorAuthorized,
-  notEnterPassword,
 } = require('../constants/errorMessage');
 const {
   jwtSecret,
@@ -36,10 +35,6 @@ const getUser = (req, res, next) => {
 // Cоздаёт пользователя с переданными в теле email, password и name
 const createUser = (req, res, next) => {
   const { email, password, name } = req.body;
-  if (!password) {
-    const error = new BadRequest(notEnterPassword);
-    return next(error);
-  }
   return bcrypt.hash(password, saltValue)
     .then((hash) => User.create({ email, password: hash, name }))
     .then((user) => {

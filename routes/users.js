@@ -3,24 +3,24 @@ const { celebrate, Joi } = require('celebrate');
 const { getUser, createUser, loginUser } = require('../controllers/users');
 const auth = require('../middlewares/auth');
 
-usersRouter.post('/signup', createUser, celebrate({
+usersRouter.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi
       .string()
-      .email()
-      .required(),
+      .required()
+      .email(),
     password: Joi
       .string()
       .required(),
     name: Joi
       .string()
+      .required()
       .min(2)
-      .max(30)
-      .required(),
+      .max(30),
   }),
-}));
+}), createUser);
 
-usersRouter.post('/signin', loginUser, celebrate({
+usersRouter.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi
       .string()
@@ -30,7 +30,7 @@ usersRouter.post('/signin', loginUser, celebrate({
       .string()
       .required(),
   }),
-}));
+}), loginUser);
 
 // Защищаем роуты
 usersRouter.use(auth);
