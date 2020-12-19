@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const valid = require('validator');
 
 // Все поля схемы обязательны, image и link проверяются на соответствие ссылке
 const articleSchema = new mongoose.Schema({
@@ -26,16 +25,10 @@ const articleSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
-    validate: {
-      validator: (v) => valid.isURL(v),
-    },
   },
   image: {
     type: String,
     required: true,
-    validate: {
-      validator: (v) => valid.isURL(v),
-    },
   },
   owner: {
     type: String,

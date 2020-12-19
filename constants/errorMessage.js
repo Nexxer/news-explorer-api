@@ -4,13 +4,15 @@ const errorValidationAddArticle = 'Не удалось создать стать
 const notFoundArticle = 'Новость не найдена';
 const errorDeleteArticleUnauth = 'Произошла ошибка! Удаление чужой статьи невозможно';
 const articleDeleteSucces = 'Новость удалена';
+const badIdArticle = 'Передан некорректеный id статьи';
+const badLinkArticle = 'Поле link не прошло валидацию';
+const badLinkImageArticle = 'Поле image не прошло валидацию';
 
 // Сообщения пользователей
 const notFoundUser = 'Пользователь не найден';
 const errorValidationUser = 'Неправильная почта или пароль';
 const errorConflictEmail = 'Используйте другие данные для регистрации';
 const errorAuthorized = 'Не удалось войти! Проверьте почту и пароль';
-const notEnterPassword = 'Вы не ввели пароль!';
 
 // Сообщение об авторизации
 const errorAuthorizationRequired = 'Необходима авторизация';
@@ -25,11 +27,13 @@ module.exports = {
   notFoundArticle,
   errorDeleteArticleUnauth,
   articleDeleteSucces,
+  badIdArticle,
+  badLinkArticle,
+  badLinkImageArticle,
   notFoundUser,
   errorValidationUser,
   errorConflictEmail,
   errorAuthorized,
-  notEnterPassword,
   errorAuthorizationRequired,
   errorServerMessage,
   errorLimit,

@@ -1,7 +1,9 @@
 const articlesRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
 const { getArticles, addArticle, deleteArticle } = require('../controllers/articles');
 const auth = require('../middlewares/auth');
+const { badLinkArticle, badLinkImageArticle } = require('../constants/errorMessage');
 
 // Защищаем роуты
 articlesRouter.use(auth);
@@ -29,12 +31,22 @@ articlesRouter.post('/articles', celebrate({
       .required(),
     link: Joi
       .string()
-      .pattern(/(https ?:\/\/|ftps?:\/\/|www\.)((?![.,?!;:()]*(\s|$))[^\s]){2,}/)
-      .required(),
+      .required()
+      .custom((value, helpers) => {
+        if (validator.isURL(value)) {
+          return value;
+        }
+        return helpers.message(badLinkArticle);
+      }),
     image: Joi
       .string()
-      .pattern(/(https ?:\/\/|ftps?:\/\/|www\.)((?![.,?!;:()]*(\s|$))[^\s]){2,}/)
-      .required(),
+      .required()
+      .custom((value, helpers) => {
+        if (validator.isURL(value)) {
+          return value;
+        }
+        return helpers.messages(badLinkImageArticle);
+      }),
   }),
 }), addArticle);
 

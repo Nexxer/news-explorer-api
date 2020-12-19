@@ -8,6 +8,7 @@ const {
   notFoundArticle,
   errorDeleteArticleUnauth,
   articleDeleteSucces,
+  badIdArticle,
 } = require('../constants/errorMessage');
 
 // Возвращаем все статьи пользователя
@@ -54,7 +55,12 @@ const deleteArticle = (req, res, next) => {
       article.remove();
       res.send({ message: articleDeleteSucces });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return next(new BadRequest(badIdArticle));
+      }
+      return next(err);
+    });
 };
 
 module.exports = { getArticles, addArticle, deleteArticle };
