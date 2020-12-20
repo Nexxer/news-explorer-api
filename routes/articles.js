@@ -51,6 +51,15 @@ articlesRouter.post('/articles', celebrate({
 }), addArticle);
 
 // удаляет сохранённую статью  по _id
-articlesRouter.delete('/articles/:articleId', deleteArticle);
+articlesRouter.delete('/articles/:articleId', celebrate({
+  params: Joi
+    .object()
+    .keys({
+      articleId: Joi
+        .string()
+        .alphanum()
+        .length(24),
+    }).unknown(true),
+}), deleteArticle);
 
 module.exports = articlesRouter;
